@@ -49,7 +49,6 @@ const AuthProvider = (props) => {
       const user = await auth.getLoggedInUser();
       setUserID(user);
     } catch (e) {
-      // This needs to be handled better, at a common place
       if (e.httpStatus === 403) {
         // refresh token
         await refreshAccessTokenAsync();
@@ -66,6 +65,10 @@ const AuthProvider = (props) => {
   };
 
   const refreshAccessTokenAsync = async () => {
+    if (!refreshToken) {
+      logout();
+      return;
+    }
     AuthSession.refreshAsync(
       {
         refreshToken,
@@ -78,10 +81,17 @@ const AuthProvider = (props) => {
         const authResponse = res;
         const storageValue = JSON.stringify(authResponse);
         await SecureStore.setItemAsync(SECURE_AUTH_STATE_KEY, storageValue);
+        const frappe = new FrappeApp(BASE_URI, {
+          useToken: true,
+          type: "Bearer",
+          token: () => accessToken,
+        });
+        const auth = frappe.auth();
         const user = await auth.getLoggedInUser();
         setUserID(user);
       })
       .catch((err) => {
+        // unable to refresh
         // clean up auth state
         logout();
         console.error(err);

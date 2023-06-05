@@ -1,4 +1,4 @@
-import { Layout, Input, Text, Card } from "@ui-kitten/components";
+import { Layout, Input, Text, Card, Spinner } from "@ui-kitten/components";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../provider/auth";
 import { BASE_URI } from "../data/constants";
@@ -6,6 +6,8 @@ import { FrappeApp } from "frappe-js-sdk";
 export const TodoScreen = () => {
   const { accessToken, refreshAccessTokenAsync } = useContext(AuthContext);
   const [todos, setTodos] = useState([]);
+  const [loadingTodos, setLoadingTodos] = useState(false);
+
   const [todo, setTodo] = useState("");
 
   const frappe = new FrappeApp(BASE_URI, {
@@ -20,6 +22,7 @@ export const TodoScreen = () => {
   }, [accessToken]);
 
   function fetchTodos() {
+    setLoadingTodos(true);
     db.getDocList("ToDo", { fields: ["name", "description"] })
       .then((res) => {
         setTodos(res);
@@ -30,6 +33,9 @@ export const TodoScreen = () => {
           // refresh token
           await refreshAccessTokenAsync();
         }
+      })
+      .finally(() => {
+        setLoadingTodos(false);
       });
   }
 
@@ -55,11 +61,18 @@ export const TodoScreen = () => {
         style={{ marginBottom: 20 }}
       />
 
-      {todos.map((todo) => (
-        <Card key={todo.name} style={{ width: "100%", marginBottom: 10 }}>
-          <Text>{todo.description}</Text>
-        </Card>
-      ))}
+      {!loadingTodos &&
+        todos.map((todo) => (
+          <Card key={todo.name} style={{ width: "100%", marginBottom: 10 }}>
+            <Text>{todo.description}</Text>
+          </Card>
+        ))}
+
+      {loadingTodos && (
+        <Layout style={{marginTop: 50}}>
+          <Spinner />
+        </Layout>
+      )}
     </Layout>
   );
 };

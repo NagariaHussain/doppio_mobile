@@ -1,7 +1,13 @@
 import React, { useContext } from "react";
 import { SafeAreaView } from "react-native";
+import styled from 'styled-components/native'
 import { Layout, Text, Button, Divider } from "@ui-kitten/components";
 import { AuthContext } from "../provider/auth";
+
+
+const LogoutButton = styled(Button)`
+  border-radius: 6px;
+`
 
 export const DetailsScreen = () => {
   const { isAuthenticated, userID, logout } = useContext(AuthContext);
@@ -16,13 +22,13 @@ export const DetailsScreen = () => {
         <Divider />
 
         {isAuthenticated && (
-          <Button
+          <LogoutButton
             onPress={() => {
               logout();
             }}
           >
             Logout
-          </Button>
+          </LogoutButton>
         )}
       </Layout>
     </SafeAreaView>
