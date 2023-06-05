@@ -3,10 +3,7 @@ import { Button, StyleSheet, View, Text } from "react-native";
 import * as AuthSession from "expo-auth-session";
 import * as SecureStore from "expo-secure-store";
 import { FrappeApp } from "frappe-js-sdk";
-
-const SECURE_AUTH_STATE_KEY = "AuthState";
-
-const BASE_URI = "https://apf-changemakers-staging.frappe.cloud";
+import { BASE_URI, SECURE_AUTH_STATE_KEY } from "./src/data/constants";
 
 export default function App() {
   const redirectUri = AuthSession.makeRedirectUri({
