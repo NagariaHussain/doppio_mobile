@@ -1,24 +1,31 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { AuthContext } from "../provider/auth";
 
-import { Layout, Button } from "@ui-kitten/components";
+import { Layout, Button, Input } from "@ui-kitten/components";
 
 const LoginScreen = () => {
-    const { isAuthenticated, promptAsync, request } =
-    useContext(AuthContext);
+  const { isAuthenticated, promptAsync, request } = useContext(AuthContext);
 
   return (
-    <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Layout
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 20,
+        rowGap: 20,
+      }}
+    >
       {!isAuthenticated && (
-          <Button
-            disabled={!request}
-            onPress={() => {
-              promptAsync();
-            }}
-          >
-            Login with Frappe
-          </Button>
-        )}
+        <Button
+          disabled={!request}
+          onPress={() => {
+            promptAsync();
+          }}
+        >
+          Login with Frappe
+        </Button>
+      )}
     </Layout>
   );
 };
