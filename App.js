@@ -36,7 +36,7 @@ export default function App() {
     SecureStore.getItemAsync(SECURE_AUTH_STATE_KEY)
       .then((result) => {
         if (result) {
-          console.log("Found stored auth state")
+          console.log("Found stored auth state");
           const { accessToken, refreshToken } = JSON.parse(result);
           setToken(accessToken);
           setRefreshToken(refreshToken);
@@ -65,6 +65,10 @@ export default function App() {
                   // Securely store the auth on your device
                   SecureStore.setItemAsync(SECURE_AUTH_STATE_KEY, storageValue);
                 }
+
+                const { accessToken, refreshToken } = auth;
+                setToken(accessToken);
+                setRefreshToken(refreshToken);
               })
               .catch((err) => {
                 console.error(err);
