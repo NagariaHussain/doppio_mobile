@@ -9,7 +9,7 @@ const AuthContext = createContext({});
 const AuthProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const redirectUri = AuthSession.makeRedirectUri({
-    scheme: "io.changemakers.app",
+    scheme: "io.frappe.changemakers",
     path: "auth",
   });
 
