@@ -31,6 +31,14 @@ const AuthProvider = (props) => {
     }
   );
 
+  const logout = async () => {
+    await SecureStore.deleteItemAsync(SECURE_AUTH_STATE_KEY);
+    setIsAuthenticated(false);
+    setToken(null);
+    setRefreshToken(null);
+    setUserID(null);
+  };
+
   useEffect(() => {
     SecureStore.getItemAsync(SECURE_AUTH_STATE_KEY)
       .then((result) => {
@@ -99,6 +107,7 @@ const AuthProvider = (props) => {
         userID,
         request,
         promptAsync,
+        logout
       }}
     >
       {props.children}

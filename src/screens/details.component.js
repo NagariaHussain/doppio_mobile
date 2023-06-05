@@ -4,7 +4,7 @@ import { Layout, Text, Button, Divider } from "@ui-kitten/components";
 import { AuthContext } from "../provider/auth";
 
 export const DetailsScreen = () => {
-  const { isAuthenticated, userID, promptAsync, request } =
+  const { isAuthenticated, userID, promptAsync, request, logout } =
     useContext(AuthContext);
 
   return (
@@ -24,6 +24,16 @@ export const DetailsScreen = () => {
             }}
           >
             Login with Frappe
+          </Button>
+        )}
+
+        {isAuthenticated && (
+          <Button
+            onPress={() => {
+              logout();
+            }}
+          >
+            Logout
           </Button>
         )}
       </Layout>
