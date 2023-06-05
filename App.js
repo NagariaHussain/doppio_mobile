@@ -19,11 +19,6 @@ import {
 } from "@ui-kitten/components";
 import { BASE_URI, SECURE_AUTH_STATE_KEY } from "./src/data/constants";
 import { default as theme } from "./theme.json";
-import {
-  BottomNavigation,
-  BottomNavigationTab,
-  Icon,
-} from "@ui-kitten/components";
 
 const HomeScreen = () => (
   <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
