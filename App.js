@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button, StyleSheet, View, Text } from "react-native";
 import * as AuthSession from "expo-auth-session";
+import * as SecureStore from "expo-secure-store";
+import { FrappeApp } from "frappe-js-sdk";
+
+const SECURE_AUTH_STATE_KEY = "AuthState";
 
 const BASE_URI = "https://apf-changemakers-staging.frappe.cloud";
 
@@ -9,8 +13,6 @@ export default function App() {
     scheme: "io.changemakers.app",
     path: "auth",
   });
-
-  console.log(redirectUri);
 
   const [code, setCode] = useState(null);
   const [token, setToken] = useState(null);
@@ -31,37 +33,46 @@ export default function App() {
   );
 
   useEffect(() => {
-    if (response?.type === "success" && !token) {
-      const { code } = response.params;
-
-      console.log("code: ");
-      console.log(code);
-
-      AuthSession.exchangeCodeAsync(
-        {
-          redirectUri,
-          code,
-          extraParams: {
-            grant_type: "authorization_code",
-            client_id: "f592ecba60",
-          },
-          clientId: "f592ecba60",
-        },
-        {
-          tokenEndpoint: `${BASE_URI}/api/method/frappe.integrations.oauth2.get_token`,
-        }
-      )
-        .then((res) => {
-          const { accessToken, refreshToken } = res;
+    SecureStore.getItemAsync(SECURE_AUTH_STATE_KEY)
+      .then((result) => {
+        if (result) {
+          console.log("Found stored auth state")
+          const { accessToken, refreshToken } = JSON.parse(result);
           setToken(accessToken);
           setRefreshToken(refreshToken);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+        } else {
+          if (response?.type === "success") {
+            const { code } = response.params;
+            AuthSession.exchangeCodeAsync(
+              {
+                redirectUri,
+                code,
+                extraParams: {
+                  grant_type: "authorization_code",
+                  client_id: "f592ecba60",
+                },
+                clientId: "f592ecba60",
+              },
+              {
+                tokenEndpoint: `${BASE_URI}/api/method/frappe.integrations.oauth2.get_token`,
+              }
+            )
+              .then((res) => {
+                const auth = res;
+                const storageValue = JSON.stringify(auth);
 
-      setCode(code);
-    }
+                if (Platform.OS !== "web") {
+                  // Securely store the auth on your device
+                  SecureStore.setItemAsync(SECURE_AUTH_STATE_KEY, storageValue);
+                }
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }
+        }
+      })
+      .catch((e) => console.error(e));
   }, [response]);
 
   return (
@@ -78,6 +89,26 @@ export default function App() {
       <View>
         <Text>Response: {JSON.stringify(token)}</Text>
       </View>
+
+      <Button
+        onPress={() => {
+          const frappe = new FrappeApp(BASE_URI, {
+            useToken: true,
+            // Pass a custom function that returns the token as a string - this could be fetched from LocalStorage or auth providers like Firebase, Auth0 etc.
+            token: () => token,
+            // This can be "Bearer" or "token"
+            type: "Bearer",
+          });
+
+          const auth = frappe.auth();
+
+          auth
+            .getLoggedInUser()
+            .then((user) => console.log(`User ${user} is logged in.`))
+            .catch((error) => console.error(error));
+        }}
+        title="Get User ID"
+      />
     </View>
   );
 }
