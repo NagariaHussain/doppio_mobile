@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../provider/auth";
 
-import { Layout, Button, Input } from "@ui-kitten/components";
+import { Layout, Button } from "@ui-kitten/components";
 
 const LoginScreen = () => {
   const { isAuthenticated, promptAsync, request } = useContext(AuthContext);

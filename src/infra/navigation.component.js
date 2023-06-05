@@ -7,6 +7,7 @@ import { BottomNavigation, BottomNavigationTab } from "@ui-kitten/components";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AuthNavigator } from "./navigation/auth.navigator";
 import { AuthContext } from "../provider/auth";
+import { TodoScreen } from "../screens/todo.screen";
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -16,13 +17,15 @@ const BottomTabBar = ({ navigation, state }) => (
     onSelect={(index) => navigation.navigate(state.routeNames[index])}
   >
     <BottomNavigationTab title="Home" />
-    <BottomNavigationTab title="Details" />
+    <BottomNavigationTab title="Todos" />
+    <BottomNavigationTab title="User" />
   </BottomNavigation>
 );
 
 const TabNavigator = () => (
   <Navigator tabBar={(props) => <BottomTabBar {...props} />}>
     <Screen name="Home" component={HomeScreen} />
+    <Screen name="ToDo" component={TodoScreen} />
     <Screen name="Details" component={DetailsScreen} />
   </Navigator>
 );

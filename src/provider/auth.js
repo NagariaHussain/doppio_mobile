@@ -39,6 +39,21 @@ const AuthProvider = (props) => {
     setUserID(null);
   };
 
+  const refreshAccessTokenAsync = async () => {
+    AuthSession.refreshAsync(
+      {
+        refreshToken,
+      },
+      {
+        tokenEndpoint: `${BASE_URI}/api/method/frappe.integrations.oauth2.get_token`,
+      }
+    ).then(async (res) => {
+      const authResponse = res;
+      const storageValue = JSON.stringify(authResponse);
+      await SecureStore.setItemAsync(SECURE_AUTH_STATE_KEY, storageValue);
+    });
+  };
+
   useEffect(() => {
     SecureStore.getItemAsync(SECURE_AUTH_STATE_KEY)
       .then((result) => {
@@ -107,7 +122,8 @@ const AuthProvider = (props) => {
         userID,
         request,
         promptAsync,
-        logout
+        logout,
+        refreshAccessTokenAsync
       }}
     >
       {props.children}
