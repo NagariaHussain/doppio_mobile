@@ -31,6 +31,27 @@ const AuthProvider = (props) => {
     }
   );
 
+  const fetchUserID = async () => {
+    const frappe = new FrappeApp(BASE_URI, {
+      useToken: true,
+      type: "Bearer",
+      token: () => accessToken,
+    });
+
+    const auth = frappe.auth();
+
+    try {
+      const user = await auth.getLoggedInUser();
+      setUserID(user);
+    } catch (e) {
+      // This needs to be handled better, at a common place
+      if (e.httpStatus === 403) {
+        // refresh token
+        await refreshAccessTokenAsync();
+      }
+    }
+  };
+
   const logout = async () => {
     await SecureStore.deleteItemAsync(SECURE_AUTH_STATE_KEY);
     setIsAuthenticated(false);
@@ -47,18 +68,25 @@ const AuthProvider = (props) => {
       {
         tokenEndpoint: `${BASE_URI}/api/method/frappe.integrations.oauth2.get_token`,
       }
-    ).then(async (res) => {
-      const authResponse = res;
-      const storageValue = JSON.stringify(authResponse);
-      await SecureStore.setItemAsync(SECURE_AUTH_STATE_KEY, storageValue);
-    });
+    )
+      .then(async (res) => {
+        const authResponse = res;
+        const storageValue = JSON.stringify(authResponse);
+        await SecureStore.setItemAsync(SECURE_AUTH_STATE_KEY, storageValue);
+        const user = await auth.getLoggedInUser();
+        setUserID(user);
+      })
+      .catch((err) => {
+        // clean up auth state
+        logout();
+        console.error(err);
+      });
   };
 
   useEffect(() => {
     SecureStore.getItemAsync(SECURE_AUTH_STATE_KEY)
       .then((result) => {
         if (result) {
-          console.log("Found stored auth state");
           const { accessToken, refreshToken } = JSON.parse(result);
           setToken(accessToken);
           setRefreshToken(refreshToken);
@@ -93,16 +121,8 @@ const AuthProvider = (props) => {
                 setRefreshToken(refreshToken);
                 setIsAuthenticated(true);
 
-                const frappe = new FrappeApp(BASE_URI, {
-                  useToken: true,
-                  type: "Bearer",
-                  token: () => accessToken,
-                });
-
-                const auth = frappe.auth();
-
-                const user = await auth.getLoggedInUser();
-                setUserID(user);
+                // fetch user id
+                await fetchUserID();
               })
               .catch((err) => {
                 console.error(err);
@@ -123,7 +143,7 @@ const AuthProvider = (props) => {
         request,
         promptAsync,
         logout,
-        refreshAccessTokenAsync
+        refreshAccessTokenAsync,
       }}
     >
       {props.children}
