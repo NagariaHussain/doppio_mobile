@@ -1,5 +1,10 @@
 import React, { createContext, useState, useEffect } from "react";
-import { BASE_URI, SECURE_AUTH_STATE_KEY } from "../data/constants";
+import {
+  BASE_URI,
+  OAUTH_CLIENT_ID,
+  REDIRECT_URL_SCHEME,
+  SECURE_AUTH_STATE_KEY,
+} from "../data/constants";
 import * as AuthSession from "expo-auth-session";
 import * as SecureStore from "expo-secure-store";
 import { FrappeApp } from "frappe-js-sdk";
@@ -9,7 +14,7 @@ const AuthContext = createContext({});
 const AuthProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const redirectUri = AuthSession.makeRedirectUri({
-    scheme: "io.frappe.changemakers",
+    scheme: REDIRECT_URL_SCHEME,
     path: "auth",
   });
 
@@ -19,7 +24,7 @@ const AuthProvider = (props) => {
 
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
-      clientId: "f592ecba60",
+      clientId: OAUTH_CLIENT_ID,
       redirectUri,
       responseType: "code",
       scopes: ["all"],
@@ -100,9 +105,9 @@ const AuthProvider = (props) => {
                 code,
                 extraParams: {
                   grant_type: "authorization_code",
-                  client_id: "f592ecba60",
+                  client_id: OAUTH_CLIENT_ID,
                 },
-                clientId: "f592ecba60",
+                clientId: OAUTH_CLIENT_ID,
               },
               {
                 tokenEndpoint: `${BASE_URI}/api/method/frappe.integrations.oauth2.get_token`,
