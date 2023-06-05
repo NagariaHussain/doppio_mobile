@@ -1,9 +1,36 @@
+import 'react-native-gesture-handler';
 import { useEffect, useState } from "react";
-import { Button, StyleSheet, View, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import * as AuthSession from "expo-auth-session";
 import * as SecureStore from "expo-secure-store";
 import { FrappeApp } from "frappe-js-sdk";
+import * as eva from "@eva-design/eva";
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
+
+import { AppNavigator } from "./src/infra/navigation.component";
+
+
+import {
+  ApplicationProvider,
+  IconRegistry,
+  Layout,
+  Text,
+  Button,
+} from "@ui-kitten/components";
 import { BASE_URI, SECURE_AUTH_STATE_KEY } from "./src/data/constants";
+import { default as theme } from "./theme.json";
+import {
+  BottomNavigation,
+  BottomNavigationTab,
+  Icon,
+} from "@ui-kitten/components";
+
+const HomeScreen = () => (
+  <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text category="h1">HOME</Text>
+    <Button onPress={() => {}}>Hello</Button>
+  </Layout>
+);
 
 export default function App() {
   const redirectUri = AuthSession.makeRedirectUri({
@@ -77,48 +104,15 @@ export default function App() {
   }, [response]);
 
   return (
-    <View style={styles.container}>
-      <Button
-        disabled={!request}
-        onPress={() => {
-          console.log("Triggering button click");
-          promptAsync();
-        }}
-        title="Login with Frappe"
-      />
-
-      <View>
-        <Text>Response: {JSON.stringify(token)}</Text>
-      </View>
-
-      <Button
-        onPress={() => {
-          const frappe = new FrappeApp(BASE_URI, {
-            useToken: true,
-            // Pass a custom function that returns the token as a string - this could be fetched from LocalStorage or auth providers like Firebase, Auth0 etc.
-            token: () => token,
-            // This can be "Bearer" or "token"
-            type: "Bearer",
-          });
-
-          const auth = frappe.auth();
-
-          auth
-            .getLoggedInUser()
-            .then((user) => console.log(`User ${user} is logged in.`))
-            .catch((error) => console.error(error));
-        }}
-        title="Get User ID"
-      />
-    </View>
+    <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+      <IconRegistry icons={EvaIconsPack} />
+      <AppNavigator/>
+    </ApplicationProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+  bottomNavigation: {
+    marginVertical: 8,
   },
 });
