@@ -4,8 +4,7 @@ import { Layout, Text, Button, Divider } from "@ui-kitten/components";
 import { AuthContext } from "../provider/auth";
 
 export const DetailsScreen = () => {
-  const { isAuthenticated, userID, promptAsync, request, logout } =
-    useContext(AuthContext);
+  const { isAuthenticated, userID, logout } = useContext(AuthContext);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -15,17 +14,6 @@ export const DetailsScreen = () => {
         <Text category="h4">{isAuthenticated ? userID : "Not Logged In"}</Text>
 
         <Divider />
-
-        {!isAuthenticated && (
-          <Button
-            disabled={!request}
-            onPress={() => {
-              promptAsync();
-            }}
-          >
-            Login with Frappe
-          </Button>
-        )}
 
         {isAuthenticated && (
           <Button

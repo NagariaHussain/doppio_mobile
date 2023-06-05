@@ -5,6 +5,8 @@ import { DetailsScreen } from "../screens/details.component";
 import { BottomNavigation, BottomNavigationTab } from "@ui-kitten/components";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { AuthNavigator } from "./navigation/auth.navigator";
+import { AuthContext } from "../provider/auth";
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -26,9 +28,11 @@ const TabNavigator = () => (
 );
 
 export const AppNavigator = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+
   return (
     <NavigationContainer>
-      <TabNavigator />
+      {isAuthenticated ? <TabNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 };
