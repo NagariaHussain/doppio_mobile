@@ -6,8 +6,9 @@ import styled from "styled-components";
 const CenteredView = styled.View`
   flex: 1;
   justify-content: center;
-  align-items: center;
   width: 100%;
+  padding: 20px;
+  row-gap: 10px;
 `;
 
 function renderFormField({ field, formField, formState: { errors } }) {
