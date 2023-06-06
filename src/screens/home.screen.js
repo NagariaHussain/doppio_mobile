@@ -26,6 +26,7 @@ export const HomeScreen = () => {
               rules: {
                 required: true,
               },
+              type: "text"
             },
             {
               name: "lastName",
@@ -33,7 +34,17 @@ export const HomeScreen = () => {
               rules: {
                 required: false,
               },
-            },]
+              type: "text"
+            },
+
+            {
+              name: "will_send_updates",
+              label: "Send Updates",
+              rules: {
+                required: false,
+              },
+              type: "checkbox"
+            }]
         }} />
 
         <Modal

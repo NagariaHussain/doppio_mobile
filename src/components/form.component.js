@@ -1,5 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
-import { Button, Text, Input } from "@ui-kitten/components";
+import { Button, Text, Input, CheckBox, Select, Datepicker } from "@ui-kitten/components";
 
 import styled from "styled-components";
 
@@ -10,9 +10,31 @@ const CenteredView = styled.View`
   width: 100%;
 `;
 
+function renderFormField({ field, formField, formState: { errors } }) {
+    if (field.type === "text") {
+        return (
+            <Input
+                placeholder={field.label}
+                onBlur={formField.onBlur}
+                onChangeText={formField.onChange}
+                value={formField.value}
+                status={errors[field.name] ? "danger" : "basic"}
+            />
+        )
+    } else if (field.type === "checkbox") {
+        return (
+            <CheckBox 
+                checked={formField.value}
+                onChange={formField.onChange}
+            >
+                {field.label}
+            </CheckBox>
+        )
+}}
+
 export default function Form({ props }) {
     const { fields } = props
-    const { control, handleSubmit, formState: { errors } } = useForm({});
+    const { control, handleSubmit, formState: { errors, dirtyFields } } = useForm({});
     const onSubmit = data => console.log(data);
 
     return (
@@ -22,22 +44,14 @@ export default function Form({ props }) {
                     key={index}
                     control={control}
                     rules={field.rules}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <Input
-                            placeholder={field.label}
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            status={errors[field.name] ? "danger" : "basic"}
-                        />
-                    )}
+                    render={({ field: formField, formState }) => renderFormField({ field, formField, formState })}
                     name={field.name}
                 />
             ))}
 
             <Text>{JSON.stringify(errors)}</Text>
 
-            <Button onPress={handleSubmit(onSubmit)}>Submit</Button>
+            <Button onPress={handleSubmit(onSubmit)}>Save</Button>
         </CenteredView>
     );
 }
