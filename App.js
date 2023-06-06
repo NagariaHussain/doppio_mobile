@@ -1,6 +1,5 @@
 import "react-native-gesture-handler";
 import * as eva from "@eva-design/eva";
-import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { AppNavigator } from "./src/infra/navigation/main.navigation";
 import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
 import { AuthProvider } from "./src/provider/auth";
@@ -15,7 +14,6 @@ export default function App() {
       <AuthProvider>
         <AppNavigator />
       </AuthProvider>
-      <IconRegistry icons={EvaIconsPack} />
       <Toast />
     </ApplicationProvider>
   );
