@@ -36,7 +36,8 @@
     "react-native-screens": "~3.20.0",
     "react-native-svg": "13.4.0",
     "react-native-toast-message": "^2.1.6",
-    "styled-components": "^5.3.11"
+    "styled-components": "^5.3.11",
+    "@shopify/flash-list": "1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -4,6 +4,16 @@ import { AuthContext } from "../provider/auth";
 import { BASE_URI } from "../data/constants";
 import { FrappeApp } from "frappe-js-sdk";
 import Toast from 'react-native-toast-message';
+import { FlashList } from "@shopify/flash-list";
+
+
+const TodoItem = ({ item }) => {
+  return (
+    <Card key={item.name} style={{ width: "100%", marginBottom: 10 }}>
+      <Text>{item.description}</Text>
+    </Card>
+  );
+};
 
 export const TodoScreen = () => {
   const { accessToken, refreshAccessTokenAsync } = useContext(AuthContext);
@@ -71,11 +81,16 @@ export const TodoScreen = () => {
       />
 
       {!loadingTodos &&
-        todos.map((todo) => (
-          <Card key={todo.name} style={{ width: "100%", marginBottom: 10 }}>
-            <Text>{todo.description}</Text>
-          </Card>
-        ))}
+        <Layout style={{ width: "100%", height: "100%" }}>
+          <FlashList
+            data={todos}
+            renderItem={TodoItem}
+            estimatedItemSize={100}
+            onRefresh={fetchTodos}
+            refreshing={loadingTodos}
+          />
+        </Layout>
+      }
 
       {loadingTodos && (
         <Layout style={{ marginTop: 50 }}>
