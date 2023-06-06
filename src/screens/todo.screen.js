@@ -23,7 +23,7 @@ export const TodoScreen = () => {
 
   function fetchTodos() {
     setLoadingTodos(true);
-    db.getDocList("ToDo", { fields: ["name", "description"] })
+    db.getDocList("ToDo", { fields: ["name", "description"], orderBy: { field: "creation", order: "desc" } })
       .then((res) => {
         setTodos(res);
       })
@@ -69,7 +69,7 @@ export const TodoScreen = () => {
         ))}
 
       {loadingTodos && (
-        <Layout style={{marginTop: 50}}>
+        <Layout style={{ marginTop: 50 }}>
           <Spinner />
         </Layout>
       )}
