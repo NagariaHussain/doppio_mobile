@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../provider/auth";
 import { BASE_URI } from "../data/constants";
 import { FrappeApp } from "frappe-js-sdk";
+import Toast from 'react-native-toast-message';
 
 export const TodoScreen = () => {
   const { accessToken, refreshAccessTokenAsync } = useContext(AuthContext);
@@ -55,6 +56,13 @@ export const TodoScreen = () => {
           db.createDoc("ToDo", { description: todo }).then((res) => {
             setTodo("");
             fetchTodos();
+          });
+
+          Toast.show({
+            type: 'success',
+            position: 'top',
+            text1: 'Success',
+            text2: 'Todo added successfully'
           });
         }}
         onChangeText={(nextValue) => setTodo(nextValue)}
