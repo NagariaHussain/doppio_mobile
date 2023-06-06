@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { HomeScreen } from "../screens/home.component";
-import { DetailsScreen } from "../screens/details.component";
+import { HomeScreen } from "../../screens/home.screen";
+import { DetailsScreen } from "../../screens/details.screen";
 import { BottomNavigation, BottomNavigationTab } from "@ui-kitten/components";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AuthNavigator } from "./navigation/auth.navigator";
-import { AuthContext } from "../provider/auth";
-import { TodoScreen } from "../screens/todo.screen";
+import { AuthNavigator } from "./auth.navigator";
+import { AuthContext } from "../../provider/auth";
+import { TodoScreen } from "../../screens/todo.screen";
 
 const { Navigator, Screen } = createBottomTabNavigator();
 

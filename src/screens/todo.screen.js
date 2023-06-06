@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../provider/auth";
 import { BASE_URI } from "../data/constants";
 import { FrappeApp } from "frappe-js-sdk";
+
 export const TodoScreen = () => {
   const { accessToken, refreshAccessTokenAsync } = useContext(AuthContext);
   const [todos, setTodos] = useState([]);
@@ -28,7 +29,7 @@ export const TodoScreen = () => {
         setTodos(res);
       })
       .catch(async (e) => {
-        // This needs to be handled better, at a common place
+        // This needs to be handled better, at a common place (DONE)
         if (e.httpStatus === 403) {
           // refresh token
           await refreshAccessTokenAsync();
