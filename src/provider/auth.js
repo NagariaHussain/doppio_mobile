@@ -37,6 +37,11 @@ const AuthProvider = (props) => {
   );
 
   const fetchUserID = async () => {
+    if (!accessToken) {
+      console.error("accessToken not found");
+      return;
+    }
+
     const frappe = new FrappeApp(BASE_URI, {
       useToken: true,
       type: "Bearer",
@@ -81,6 +86,11 @@ const AuthProvider = (props) => {
         const authResponse = res;
         const storageValue = JSON.stringify(authResponse);
         await SecureStore.setItemAsync(SECURE_AUTH_STATE_KEY, storageValue);
+
+        setToken(authResponse.accessToken);
+        setRefreshToken(authResponse.refreshToken);
+        setIsAuthenticated(true);
+
         const frappe = new FrappeApp(BASE_URI, {
           useToken: true,
           type: "Bearer",
@@ -131,22 +141,26 @@ const AuthProvider = (props) => {
                   storageValue
                 );
 
-                const { accessToken, refreshToken } = authResponse;
-                setToken(accessToken);
-                setRefreshToken(refreshToken);
+                setToken(authResponse.accessToken);
+                setRefreshToken(authResponse.refreshToken);
                 setIsAuthenticated(true);
-
-                // fetch user id
-                await fetchUserID();
               })
               .catch((err) => {
                 console.error(err);
               });
+          } else {
+            console.log("Not authenticated")
           }
         }
       })
       .catch((e) => console.error(e));
   }, [response]);
+
+  useEffect(() => {
+    if (accessToken) {
+      fetchUserID();
+    }
+  }, [accessToken])
 
   return (
     <AuthContext.Provider
