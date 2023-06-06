@@ -1,7 +1,7 @@
 import "react-native-gesture-handler";
 import * as eva from "@eva-design/eva";
 import { AppNavigator } from "./src/infra/navigation/main.navigation";
-import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
+import { ApplicationProvider } from "@ui-kitten/components";
 import { AuthProvider } from "./src/provider/auth";
 import Toast from 'react-native-toast-message';
 
