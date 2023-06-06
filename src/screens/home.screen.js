@@ -1,6 +1,8 @@
 import React from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { Button, Layout, Modal, Card, Text } from "@ui-kitten/components";
+import Form from "../components/form.component";
+
 
 export const HomeScreen = () => {
   const navigateDetails = () => {
@@ -15,6 +17,24 @@ export const HomeScreen = () => {
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
         <Button onPress={navigateDetails}>OPEN MODAL</Button>
+
+        <Form props={{
+          fields: [
+            {
+              name: "firstName",
+              label: "First Name",
+              rules: {
+                required: true,
+              },
+            },
+            {
+              name: "lastName",
+              label: "Last Name",
+              rules: {
+                required: false,
+              },
+            },]
+        }} />
 
         <Modal
           visible={visible}
