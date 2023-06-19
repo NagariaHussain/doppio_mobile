@@ -20,7 +20,7 @@ const AuthProvider = (props) => {
 
   const [accessToken, setToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
-  const [userID, setUserID] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
 
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
@@ -36,7 +36,7 @@ const AuthProvider = (props) => {
     }
   );
 
-  const fetchUserID = async () => {
+  const fetchUserInfo = async () => {
     if (!accessToken) {
       console.error("accessToken not found");
       return;
@@ -48,11 +48,11 @@ const AuthProvider = (props) => {
       token: () => accessToken,
     });
 
-    const auth = frappe.auth();
 
     try {
-      const user = await auth.getLoggedInUser();
-      setUserID(user);
+      const call = frappe.call();
+      const userInfo = await call.get("frappe.integrations.oauth2.openid_profile")
+      setUserInfo(userInfo);
     } catch (e) {
       if (e.httpStatus === 403) {
         // refresh token
@@ -66,7 +66,7 @@ const AuthProvider = (props) => {
     setIsAuthenticated(false);
     setToken(null);
     setRefreshToken(null);
-    setUserID(null);
+    setUserInfo(null);
   };
 
   const refreshAccessTokenAsync = async () => {
@@ -96,9 +96,9 @@ const AuthProvider = (props) => {
           type: "Bearer",
           token: () => accessToken,
         });
-        const auth = frappe.auth();
-        const user = await auth.getLoggedInUser();
-        setUserID(user);
+        const call = frappe.call();
+        const userInfo = await call.get("frappe.integrations.oauth2.openid_profile")
+        setUserInfo(userInfo);
       })
       .catch((err) => {
         // unable to refresh
@@ -158,7 +158,7 @@ const AuthProvider = (props) => {
 
   useEffect(() => {
     if (accessToken) {
-      fetchUserID();
+      fetchUserInfo();
     }
   }, [accessToken])
 
@@ -168,7 +168,7 @@ const AuthProvider = (props) => {
         isAuthenticated,
         accessToken,
         refreshToken,
-        userID,
+        userInfo,
         request,
         promptAsync,
         logout,

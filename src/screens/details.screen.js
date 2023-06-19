@@ -10,15 +10,14 @@ const LogoutButton = styled(Button)`
 `
 
 export const DetailsScreen = () => {
-  const { isAuthenticated, userID, logout } = useContext(AuthContext);
+  const { isAuthenticated, logout, userInfo } = useContext(AuthContext);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Layout
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
-        <Text category="h4">{isAuthenticated ? userID : "Not Logged In"}</Text>
-
+        <Text category="h4">{isAuthenticated ? userInfo.name : "Not Logged In"}</Text>
         <Divider />
 
         {isAuthenticated && (
