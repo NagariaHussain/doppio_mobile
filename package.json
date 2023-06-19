@@ -36,7 +36,9 @@
     "react-native-screens": "~3.20.0",
     "react-native-svg": "13.4.0",
     "react-native-toast-message": "^2.1.6",
-    "styled-components": "^5.3.11"
+    "styled-components": "^5.3.11",
+    "expo-image": "~1.0.1",
+    "expo-image-picker": "~14.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
