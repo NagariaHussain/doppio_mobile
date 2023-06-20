@@ -45,8 +45,6 @@ export default async function uploadFile(fileUri, fileName, fileType, options) {
         onUploadProgress: (progressEvent) => {
             if (options?.onUploadProgress)
                 options.onUploadProgress(progressEvent);
-
-            console.log((progressEvent.loaded / progressEvent.total) * 100, '%');
         }
     }).then((res) => {
         if (options?.onUploadComplete)
