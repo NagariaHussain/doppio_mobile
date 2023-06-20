@@ -1,10 +1,9 @@
 import { Layout, Input, Text, Card, Spinner } from "@ui-kitten/components";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../provider/auth";
-import { BASE_URI } from "../data/constants";
-import { FrappeApp } from "frappe-js-sdk";
 import Toast from 'react-native-toast-message';
 import { FlashList } from "@shopify/flash-list";
+import { useFrappe } from "../provider/backend";
 
 
 const TodoItem = ({ item }) => {
@@ -19,15 +18,8 @@ export const TodoScreen = () => {
   const { accessToken, refreshAccessTokenAsync } = useContext(AuthContext);
   const [todos, setTodos] = useState([]);
   const [loadingTodos, setLoadingTodos] = useState(false);
-
   const [todo, setTodo] = useState("");
-
-  const frappe = new FrappeApp(BASE_URI, {
-    useToken: true,
-    type: "Bearer",
-    token: () => accessToken,
-  });
-  const db = frappe.db();
+  const { db } = useFrappe()
 
   useEffect(() => {
     fetchTodos();

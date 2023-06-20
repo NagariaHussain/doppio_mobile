@@ -7,12 +7,15 @@ import Toast from 'react-native-toast-message';
 
 
 import { default as theme } from "./theme.json";
+import { FrappeProvider } from "./src/provider/backend";
 
 export default function App() {
   return (
     <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
       <AuthProvider>
-        <AppNavigator />
+        <FrappeProvider>
+          <AppNavigator />
+        </FrappeProvider>
       </AuthProvider>
       <Toast />
     </ApplicationProvider>
