@@ -5,6 +5,7 @@ import { Layout, Text, Button, Divider } from "@ui-kitten/components";
 import { AuthContext } from "../provider/auth";
 import * as ImagePicker from 'expo-image-picker';
 import { Image } from "expo-image"
+import uploadFile from "../utils/fileUploader";
 
 const LogoutButton = styled(Button)`
   border-radius: 6px;
@@ -17,19 +18,14 @@ const ProfileImage = styled(Image)`
 `
 
 export const DetailsScreen = () => {
-  const { isAuthenticated, logout, userInfo, accessToken } = useContext(AuthContext);
-
-  const fetchImageFromUri = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    return blob;
-  };
+  const { isAuthenticated, logout, userInfo, accessToken, fetchUserInfo } = useContext(AuthContext);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Layout
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
       >
+
 
         <ProfileImage source={{
           uri: userInfo.picture, headers: {
@@ -45,11 +41,27 @@ export const DetailsScreen = () => {
             aspect: [1, 1],
             quality: 1,
           })
-          
+
           if (!result.canceled) {
-            // setImage(result.assets[0].uri);
-            console.log("Yup, we have an image now!")
-            console.log(result.assets[0].uri)
+            try {
+              await uploadFile(result.assets[0].uri, result.assets[0].uri.split('/').pop(), result.assets[0].type, {
+                accessToken: accessToken,
+                onUploadProgress: (progressEvent) => {
+                  console.log((progressEvent.loaded / progressEvent.total) * 100, '%');
+                },
+                onUploadComplete: async (data) => {
+                  console.log("Upload Complete!")
+                  await fetchUserInfo()
+                },
+                isPrivate: false,
+                doctype: "User",
+                docname: userInfo.email,
+                fieldname: "user_image"
+              })
+            } catch (error) {
+              console.log(error)
+            }
+
           }
         }}>Change Profile Pic</Button>
 
@@ -66,6 +78,6 @@ export const DetailsScreen = () => {
           </LogoutButton>
         )}
       </Layout>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };

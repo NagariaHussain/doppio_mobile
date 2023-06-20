@@ -173,6 +173,7 @@ const AuthProvider = (props) => {
         promptAsync,
         logout,
         refreshAccessTokenAsync,
+        fetchUserInfo
       }}
     >
       {props.children}
