@@ -16,7 +16,7 @@ const LogoutButton = styled(Button)`
 const ProfileImage = styled(Image)`
   width: 120px; 
   height: 120px;
-  border-radius: 100%;
+  border-radius: 9999px;
 `
 
 export const DetailsScreen = () => {
